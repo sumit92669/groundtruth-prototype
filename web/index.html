@@ -1,0 +1,108 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GroundTruth — hyperlocal civic intelligence</title>
+<link rel="stylesheet" href="{% static 'vendor/leaflet.css' %}">
+<link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><span class="g">Ground</span><span class="t">Truth</span></div>
+    <button class="btn-primary" id="btn-new">+ New Report</button>
+    <nav>
+      <a href="#/" id="nav-map" class="nav active">Map</a>
+      <a href="#/authority" id="nav-auth" class="nav">Authority dashboard</a>
+      <a href="/api/docs/" target="_blank" class="nav">API docs</a>
+      <a href="/admin/" target="_blank" class="nav">Moderation (admin)</a>
+    </nav>
+    <div class="spacer"></div>
+    <div class="userbox" id="userbox"></div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <input id="search" class="search" type="search" placeholder="Search a street or area… (press Enter)" autocomplete="off">
+      <div class="chip-city">📍 Finding your location…</div>
+    </header>
+
+    <section id="kpis" class="kpis" hidden></section>
+
+    <div class="body">
+      <div class="mapwrap">
+        <div id="map"></div>
+        <div class="filters" id="filters"></div>
+        <div class="legend">
+          <div><i style="background:var(--good)"></i>Good</div>
+          <div><i style="background:var(--warn)"></i>Needs attention</div>
+          <div><i style="background:var(--poor)"></i>Poor / unsafe</div>
+        </div>
+        <div class="pickbanner" id="pickbanner" hidden>Click the map to place your report pin
+          <button class="btn-ghost" id="pick-cancel">Cancel</button></div>
+      </div>
+
+      <aside class="panel" id="panel-citizen">
+        <div class="scorecard" id="scorecard"></div>
+        <div class="card">
+          <h3>Streets in view <span class="muted">best → worst</span></h3>
+          <div id="streets"></div>
+        </div>
+        <div class="card" id="official"></div>
+      </aside>
+
+      <aside class="panel" id="panel-authority" hidden>
+        <div class="card">
+          <h3>Top recurring issues</h3>
+          <div id="issues"></div>
+        </div>
+        <p class="muted small">Resolving an issue marks its open low-rated reports as resolved.</p>
+      </aside>
+    </div>
+  </main>
+</div>
+
+<div class="modal" id="modal-login" hidden><div class="dialog">
+  <h2>Sign in</h2>
+  <form id="login-form">
+    <input id="lg-user" placeholder="Username" autocomplete="username" required>
+    <input id="lg-pass" type="password" placeholder="Password" autocomplete="current-password" required>
+    <div class="err" id="lg-err"></div>
+    <button class="btn-primary" type="submit">Sign in</button>
+  </form>
+  <div class="demo-logins">
+    <button class="btn-ghost" id="demo-citizen">Demo login — Citizen</button>
+    <button class="btn-ghost" id="demo-auth">Demo login — Authority</button>
+  </div>
+  <button class="btn-link" id="login-close">Close</button>
+</div></div>
+
+<div class="modal" id="modal-report" hidden><div class="dialog wide">
+  <h2>Report a spot</h2>
+  <form id="report-form">
+    <label>Street / landmark<input id="rp-street" placeholder="e.g. 12th Main Road" required></label>
+    <div class="locrow">
+      <div>📍 <span id="rp-loc" class="mono">—</span></div>
+      <div>
+        <button type="button" class="btn-ghost" id="rp-geo">Use my location</button>
+        <button type="button" class="btn-ghost" id="rp-pick">Pick on map</button>
+      </div>
+    </div>
+    <div id="sliders"></div>
+    <label>Comment (optional)<textarea id="rp-comment" rows="2" placeholder="What did you notice?"></textarea></label>
+    <label>Photo (optional)<input id="rp-photo" type="file" accept="image/*"></label>
+    <div class="err" id="rp-err"></div>
+    <div class="actions">
+      <button type="button" class="btn-link" id="rp-cancel">Cancel</button>
+      <button class="btn-primary" type="submit" id="rp-submit">Submit report</button>
+    </div>
+  </form>
+</div></div>
+
+<div class="toast" id="toast" hidden></div>
+
+<script src="{% static 'vendor/leaflet.js' %}"></script>
+<script src="{% static 'app.js' %}"></script>
+</body>
+</html>
