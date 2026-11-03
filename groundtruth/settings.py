@@ -11,21 +11,24 @@ https://docs.djangoproject.com/en/6.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+ON_VERCEL = os.environ.get('VERCEL') == '1'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-ltqas7vc(_er2wvf9=#x$+!6$06fhha3uls5srign5*2d3_ius'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY') or (
+    'groundtruth-public-demo-signing-key-not-for-real-data'
+    if ON_VERCEL else 'local-development-only-change-me'
+)
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DJANGO_DEBUG', 'False' if ON_VERCEL else 'True').lower() == 'true'
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['.vercel.app', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -78,7 +81,7 @@ WSGI_APPLICATION = 'groundtruth.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': Path('/tmp/groundtruth.sqlite3') if ON_VERCEL else BASE_DIR / 'db.sqlite3',
     }
 }
 
@@ -117,7 +120,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 
 # Email
@@ -131,7 +135,7 @@ MAILERS = {
 
 STATICFILES_DIRS = [BASE_DIR / 'web' / 'static']
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_ROOT = Path('/tmp/groundtruth_media') if ON_VERCEL else BASE_DIR / 'media'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': ('rest_framework_simplejwt.authentication.JWTAuthentication',),

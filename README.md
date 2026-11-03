@@ -24,6 +24,12 @@ Open **http://127.0.0.1:8000** (needs internet once for the OpenStreetMap tiles)
 
 Also: Swagger API docs at `/api/docs/`, moderation panel at `/admin/`. Run tests: `python manage.py test`.
 
+## Quick Vercel demo deployment
+
+Vercel can auto-detect this Django project from `manage.py`; use the repository root as the project root and leave the build, output, and install settings at their defaults. No environment variables or external database are required for a demo deployment.
+
+On Vercel, the app initializes its demo data in temporary SQLite storage on first start. New accounts, reports, and uploaded photos are temporary and can reset or differ between serverless instances. This no-configuration demo also uses a public signing key and publicly known demo login passwords. Do not use it for real accounts or data; use a private `DJANGO_SECRET_KEY`, persistent database, and file storage before production use.
+
 ## 3-minute demo script
 1. **Open the map** — green / amber / red pins across six areas. Point out the filter chips (Cleanliness, Safety, Lighting…) recoloring the pins.
 2. **Click a red pin in BTM Layout or Whitefield** — score card shows the area score, five parameter bars and recent resident comments. "Streets in view" ranks streets best → worst.
